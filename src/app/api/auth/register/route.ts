@@ -8,19 +8,20 @@ export async function POST(req: Request) {
 
   if (!email || !password) {
     return Response.json(
-      {
-        message: "Email and Password are required",
-      },
+      { message: "Email and Password are required" },
       { status: 400 }
     );
   }
 
   const hashedPassword = await saltAndHashPassword(password);
 
-  console.log(password, hashedPassword);
+  if (await prisma.user.findUnique({ where: { email: email } }))
+    return Response.json(
+      { message: "User email already register" },
+      { status: 422 }
+    );
 
   try {
-    console.log(1);
     const user = await prisma.user.create({
       data: {
         email: email,
@@ -28,38 +29,13 @@ export async function POST(req: Request) {
         name: name,
       },
     });
-    return Response.json(user, { status: 201 });
+
+    return Response.json(
+      user,
+      // { message: "User was register with success" },
+      { status: 201 }
+    );
   } catch (error) {
     return Response.json({ message: "Internal server error" }, { status: 500 });
   }
 }
-
-/*
-export async function POST(request: Request) {
-  console.log("teste");
-  console.log(request.body);
-  return Response.json(request);
-  const { email, password, name } = req.body;
-
-  if (!email || !password) {
-    return res.status(400).json({ message: "Email and Password are required" });
-  }
-
-  const hashedPassword = await saltAndHashPassword(password);
-
-  console.log(password, hashedPassword);
-
-  try {
-    const user = await prisma.user.create({
-      data: {
-        email: email,
-        password: hashedPassword,
-        name: name,
-      },
-    });
-    res.status(201).json(user);
-  } catch (error) {
-    res.status(500).json({ message: "Internal server error" });
-  }
-}
-*/

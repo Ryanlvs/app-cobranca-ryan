@@ -1,19 +1,14 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import { comparePassword } from "@/utils/password";
+
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
-
-import { saltAndHashPassword } from "@/utils/password";
 
 const prisma = new PrismaClient();
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  pages: {
-    signIn: "/auth",
-    signOut: "/auth",
-    error: "/auth",
-    verifyRequest: "/auth",
-  },
+  session: { strategy: "jwt" },
   adapter: PrismaAdapter(prisma),
   providers: [
     Credentials({
@@ -22,9 +17,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         password: { label: "Password", type: "password" },
       },
       authorize: async (credentials) => {
-        console.log(credentials);
-        const pwHash = saltAndHashPassword(credentials.password);
-
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
@@ -33,7 +25,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           throw new Error("User not found.");
         }
 
-        if (user.password === pwHash) return user;
+        const passwordCheck = await comparePassword(
+          credentials.password,
+          user.password
+        );
+
+        if (passwordCheck) {
+          console.log("usuario logado");
+          return user;
+        }
 
         return null;
       },

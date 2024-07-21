@@ -19,10 +19,13 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
+import { toast } from "@/components/ui/use-toast";
+import { ToastAction } from "@radix-ui/react-toast";
 
 export function RegisterForm() {
   const form = useForm();
+  const router = useRouter();
 
   const handleSubmit = form.handleSubmit(async (data) => {
     const res = await fetch("/api/auth/register", {
@@ -32,6 +35,15 @@ export function RegisterForm() {
       },
       body: JSON.stringify(data),
     });
+
+    if (res.status == 201) {
+      toast({
+        title: "Usuário criado com sucesso",
+        description: "",
+        action: <ToastAction altText="Logar">Logar</ToastAction>,
+      });
+      // router.replace("/auth");
+    }
   });
 
   return (
@@ -84,6 +96,16 @@ export function RegisterForm() {
                 {...form.register("password")}
               />
             </div>
+            <div className="space-y-2">
+              <Label htmlFor="login">Já possui uma conta? </Label>
+              <Link
+                href="/auth"
+                className="text-primary hover:underline"
+                prefetch={false}
+              >
+                Faça login
+              </Link>
+            </div>
           </CardContent>
           <CardFooter>
             <Button className="w-full" type="submit">
@@ -117,7 +139,7 @@ export function RegisterForm() {
   );
 }
 
-function MountainIcon(props) {
+function MountainIcon(props: any) {
   return (
     <svg
       {...props}
@@ -136,7 +158,7 @@ function MountainIcon(props) {
   );
 }
 
-function XIcon(props) {
+function XIcon(props: any) {
   return (
     <svg
       {...props}
