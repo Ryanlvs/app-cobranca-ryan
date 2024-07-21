@@ -1,4 +1,5 @@
 import { auth, signOut } from "@/services/auth";
+import Dashboard from "./_components/dashboard";
 
 export default async function Page() {
   const session = await auth();
@@ -8,12 +9,14 @@ export default async function Page() {
     await signOut();
   };
 
-  return (
-    <>
-      <pre>{JSON.stringify(session, null, 1)}</pre>
-      <form action={logoff}>
-        <button type="submit">Sing Out</button>
-      </form>
-    </>
-  );
+  return <Dashboard user={session.user} />;
+
+  // return (
+  //   <>
+  //     <pre>{JSON.stringify(session, null, 1)}</pre>
+  //     <form action={logoff}>
+  //       <button type="submit">Sing Out</button>
+  //     </form>
+  //   </>
+  // );
 }
