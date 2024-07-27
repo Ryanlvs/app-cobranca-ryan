@@ -170,12 +170,8 @@ export default function InstallmentsPage({
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid items-center grid-cols-4 gap-4">
-              <Label htmlFor="client" className="text-right">
-                Cliente
-              </Label>
+              <Label className="text-right">Cliente</Label>
               <Select
-                id="client"
-                className="col-span-3"
                 required
                 onValueChange={(clientId) => {
                   let newChargeInstance = newCharge;
