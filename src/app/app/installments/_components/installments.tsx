@@ -37,6 +37,12 @@ import {
 } from "@/components/ui/select";
 import { SelectGroup, SelectLabel } from "@radix-ui/react-select";
 
+interface installmentCreater {
+  clientId: number;
+  amount: number;
+  dueDate: Date;
+}
+
 export default function InstallmentsPage({
   clients,
   installments,
@@ -49,7 +55,11 @@ export default function InstallmentsPage({
   const [maxValue, setMaxValue] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [newCharge, setNewCharge] = useState({});
+  const [newCharge, setNewCharge] = useState({
+    clientId: -1,
+    amount: -1,
+    dueDate: new Date(),
+  });
 
   const filteredInstallments = installments.filter((charge: any) => {
     const clientMatch =

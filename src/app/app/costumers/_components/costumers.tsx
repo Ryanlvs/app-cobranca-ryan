@@ -29,16 +29,18 @@ import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 
 interface clientCreater {
+  userId: string;
   name: string;
   phone: string;
 }
 
-export default function Costumers({ createClient, clients }: any) {
+export default function Costumers({ user, createClient, clients }: any) {
   const router = useRouter();
 
   const [search, setSearch] = useState("");
   const [customers, setCustomers] = useState(clients);
   const [newClient, setNewClient] = useState<clientCreater>({
+    userId: "",
     name: "",
     phone: "",
   });
@@ -136,6 +138,7 @@ export default function Costumers({ createClient, clients }: any) {
                 onClick={() => {
                   if (!newClient.name) return;
                   if (!newClient.phone) return;
+                  setNewClient({ ...newClient, userId: user.id });
                   createClient(newClient);
                   router.refresh();
                 }}

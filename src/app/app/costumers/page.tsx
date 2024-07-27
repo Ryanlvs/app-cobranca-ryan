@@ -51,7 +51,7 @@ export default async function Page() {
     if (session?.user) {
       await prisma.client.create({
         data: {
-          userId: session.user.id,
+          userId: client.userId,
           name: client.name,
           phone: client.phone,
         },
