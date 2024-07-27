@@ -6,6 +6,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -34,81 +35,37 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { SelectGroup, SelectLabel } from "@radix-ui/react-select";
 
-export default function InstallmentsPage() {
+export default function InstallmentsPage({
+  clients,
+  installments,
+  createInstallment,
+}: any) {
+  const router = useRouter();
+
   const [search, setSearch] = useState("");
   const [minValue, setMinValue] = useState("");
   const [maxValue, setMaxValue] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [newCharge, setNewCharge] = useState({ client: "", value: "" });
+  const [newCharge, setNewCharge] = useState({});
 
-  const charges = [
-    {
-      id: 1,
-      client: "João da Silva",
-      value: 150.0,
-      whatsappLink: "https://wa.me/5511999999999",
-      status: "Pendente",
-    },
-    {
-      id: 2,
-      client: "Maria Oliveira",
-      value: 250.0,
-      whatsappLink: "https://wa.me/5511888888888",
-      status: "Pago",
-    },
-    {
-      id: 3,
-      client: "Pedro Almeida",
-      value: 80.0,
-      whatsappLink: "https://wa.me/5511777777777",
-      status: "Atrasado",
-    },
-    {
-      id: 4,
-      client: "Ana Souza",
-      value: 300.0,
-      whatsappLink: "https://wa.me/5511666666666",
-      status: "Pendente",
-    },
-    {
-      id: 5,
-      client: "Lucas Fernandes",
-      value: 120.0,
-      whatsappLink: "https://wa.me/5511555555555",
-      status: "Pago",
-    },
-    {
-      id: 6,
-      client: "Fernanda Rodrigues",
-      value: 180.0,
-      whatsappLink: "https://wa.me/5511444444444",
-      status: "Pendente",
-    },
-    {
-      id: 7,
-      client: "Gustavo Alves",
-      value: 220.0,
-      whatsappLink: "https://wa.me/5511333333333",
-      status: "Pago",
-    },
-    {
-      id: 8,
-      client: "Isabela Souza",
-      value: 90.0,
-      whatsappLink: "https://wa.me/5511222222222",
-      status: "Atrasado",
-    },
-  ];
-
-  const filteredCharges = charges.filter((charge) => {
+  const filteredInstallments = installments.filter((charge: any) => {
     const clientMatch =
       search === "" ||
       charge.client.toLowerCase().includes(search.toLowerCase());
+
     const valueMatch =
       (minValue === "" || charge.value >= parseFloat(minValue)) &&
       (maxValue === "" || charge.value <= parseFloat(maxValue));
-    return clientMatch && valueMatch;
+
+    const statusMatch =
+      selectedStatus === "" ||
+      selectedStatus === "TODOS" ||
+      charge.status === selectedStatus;
+
+    return clientMatch && valueMatch && statusMatch;
   });
 
   return (
@@ -136,6 +93,22 @@ export default function InstallmentsPage() {
               onChange={(e) => setMaxValue(e.target.value)}
             />
           </div>
+          <div className="flex items-center gap-2">
+            <Select onValueChange={setSelectedStatus}>
+              <SelectTrigger>
+                <SelectValue placeholder="Filtrar por status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Status</SelectLabel>
+                  <SelectItem value="TODOS">Todos</SelectItem>
+                  <SelectItem value="Pendente">Pendente</SelectItem>
+                  <SelectItem value="Pago">Pago</SelectItem>
+                  <SelectItem value="Atrasado">Atrasado</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
           <Button onClick={() => setShowModal(true)}>
             Criar nova cobrança
           </Button>
@@ -151,10 +124,10 @@ export default function InstallmentsPage() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {filteredCharges.map((charge) => (
-            <TableRow key={charge.id}>
-              <TableCell>{charge.client}</TableCell>
-              <TableCell>R$ {charge.value.toFixed(2)}</TableCell>
+          {filteredInstallments.map((installment: any) => (
+            <TableRow key={installment.id}>
+              <TableCell>{installment.client}</TableCell>
+              <TableCell>R$ {installment.value.toFixed(2)}</TableCell>
               <TableCell>
                 <Link href="#" target="_blank" prefetch={false}>
                   Enviar mensagem
@@ -163,14 +136,14 @@ export default function InstallmentsPage() {
               <TableCell>
                 <Badge
                   variant={
-                    charge.status === "Pendente"
-                      ? "warning"
-                      : charge.status === "Pago"
-                      ? "success"
-                      : "danger"
+                    installment.status === "Pendente"
+                      ? "default"
+                      : installment.status === "Pago"
+                      ? "secondary"
+                      : "destructive"
                   }
                 >
-                  {charge.status}
+                  {installment.status}
                 </Badge>
               </TableCell>
             </TableRow>
@@ -192,19 +165,21 @@ export default function InstallmentsPage() {
               </Label>
               <Select
                 id="client"
-                value={newCharge.client}
                 className="col-span-3"
-                onValueChange={(e) =>
-                  setNewCharge({ ...newCharge, client: e.target.value })
-                }
+                required
+                onValueChange={(clientId) => {
+                  let newChargeInstance = newCharge;
+                  newChargeInstance.clientId = Number(clientId);
+                  setNewCharge(newChargeInstance);
+                }}
               >
-                <SelectTrigger>
+                <SelectTrigger className="col-span-3">
                   <SelectValue placeholder="Selecione um cliente" />
                 </SelectTrigger>
                 <SelectContent>
-                  {charges.map((charge) => (
-                    <SelectItem key={charge.id} value={charge.client}>
-                      {charge.client}
+                  {clients.map((client: any) => (
+                    <SelectItem key={client.id} value={client.id}>
+                      {client.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -217,11 +192,29 @@ export default function InstallmentsPage() {
               <Input
                 id="value"
                 type="number"
-                value={newCharge.value}
-                onChange={(e) =>
-                  setNewCharge({ ...newCharge, value: e.target.value })
-                }
+                required
+                onChange={(e) => {
+                  let newChargeInstance = newCharge;
+                  newChargeInstance.amount = Number(e.target.value);
+                  setNewCharge(newChargeInstance);
+                }}
                 className="col-span-3"
+              />
+            </div>
+            <div className="grid items-center grid-cols-4 gap-4">
+              <Label htmlFor="paymentDate" className="text-right">
+                Dia do acerto
+              </Label>
+              <Input
+                id="paymentDate"
+                type="date"
+                required
+                onChange={(e) => {
+                  let newChargeInstance = newCharge;
+                  newChargeInstance.dueDate = new Date(e.target.value);
+                  setNewCharge(newChargeInstance);
+                }}
+                className="col-span-2 "
               />
             </div>
           </div>
@@ -236,7 +229,12 @@ export default function InstallmentsPage() {
             <Button
               type="button"
               onClick={() => {
-                setShowModal(false);
+                if (!newCharge.clientId) return;
+                if (!newCharge.amount) return;
+                if (!newCharge.dueDate) return;
+
+                createInstallment(newCharge);
+                router.refresh();
               }}
             >
               Salvar

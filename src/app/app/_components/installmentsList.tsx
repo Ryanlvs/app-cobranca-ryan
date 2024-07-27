@@ -14,6 +14,7 @@ import {
   TableBody,
   TableCell,
 } from "@/components/ui/table";
+import { formatDate, formatValue } from "@/utils/utils";
 import { FaWhatsapp } from "react-icons/fa";
 
 interface installment {
@@ -41,6 +42,7 @@ export default function InstallmentsList({
           <TableHeader>
             <TableRow>
               <TableHead>Cliente</TableHead>
+              <TableHead>Dia pagamento</TableHead>
               <TableHead>Valor</TableHead>
               <TableHead>Link WhatsApp</TableHead>
               <TableHead>Status</TableHead>
@@ -55,7 +57,8 @@ export default function InstallmentsList({
                       <div>{installment.clientName}</div>
                     </div>
                   </TableCell>
-                  <TableCell>R$ {installment.amount}</TableCell>
+                  <TableCell>{formatDate(installment.dueDate)}</TableCell>
+                  <TableCell>{formatValue(installment.amount)}</TableCell>
                   <TableCell>
                     <a href={installment.link}>
                       <FaWhatsapp size={30} />

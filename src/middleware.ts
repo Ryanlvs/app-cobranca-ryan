@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { getUrl } from "./lib/get-url";
 
 export default async function middleware(request: NextRequest) {
+  // console.log("AUTH", auth());
+  // console.log("REQUEST", request);
+
   const token = request.cookies.get("authjs.session-token");
   const pathname = request.nextUrl.pathname;
 

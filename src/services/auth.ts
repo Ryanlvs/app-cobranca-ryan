@@ -8,6 +8,10 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  pages: {
+    signIn: "/auth",
+    signOut: "/auth",
+  },
   session: { strategy: "jwt" },
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -39,4 +43,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
+  callbacks: {
+    async session({ session, token }) {
+      session.user.id = token.sub;
+      session.user.name = token.name;
+      session.user.email = token.email;
+      return session;
+    },
+    authorized: async ({ auth }) => {
+      // Logged in users are authenticated, otherwise redirect to login page
+      console.log(auth);
+      return !!auth;
+    },
+  },
 });
