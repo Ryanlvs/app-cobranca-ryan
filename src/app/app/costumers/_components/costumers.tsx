@@ -28,12 +28,20 @@ import {
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 
+interface clientCreater {
+  name: string;
+  phone: string;
+}
+
 export default function Costumers({ createClient, clients }: any) {
   const router = useRouter();
 
   const [search, setSearch] = useState("");
   const [customers, setCustomers] = useState(clients);
-  const [newClient, setNewClient] = useState({});
+  const [newClient, setNewClient] = useState<clientCreater>({
+    name: "",
+    phone: "",
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const filteredCustomers = useMemo(() => {
