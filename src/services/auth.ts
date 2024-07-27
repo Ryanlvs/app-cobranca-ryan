@@ -35,7 +35,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         );
 
         if (passwordCheck) {
-          console.log("usuario logado");
           return user;
         }
 
@@ -49,11 +48,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       session.user.name = token.name;
       session.user.email = token.email;
       return session;
-    },
-    authorized: async ({ auth }) => {
-      // Logged in users are authenticated, otherwise redirect to login page
-      console.log(auth);
-      return !!auth;
     },
   },
 });

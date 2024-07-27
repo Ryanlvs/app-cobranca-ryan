@@ -114,7 +114,6 @@ export default function Costumers({ createClient, clients }: any) {
                   let newClientInstance = newClient;
                   newClientInstance.name = e.target.value;
                   setNewClient(newClientInstance);
-                  console.log(newClient);
                 }}
               />
             </div>
@@ -128,7 +127,6 @@ export default function Costumers({ createClient, clients }: any) {
                   let newClientInstance = newClient;
                   newClientInstance.phone = e.target.value;
                   setNewClient(newClientInstance);
-                  console.log(newClient);
                 }}
               />
             </div>
@@ -138,7 +136,6 @@ export default function Costumers({ createClient, clients }: any) {
                 onClick={() => {
                   if (!newClient.name) return;
                   if (!newClient.phone) return;
-                  console.log(newClient);
                   createClient(newClient);
                   router.refresh();
                 }}

@@ -48,13 +48,15 @@ export default async function Page() {
 
   const createClient = async (client: any) => {
     "use server";
-    await prisma.client.create({
-      data: {
-        userId: session?.user?.id,
-        name: client.name,
-        phone: client.phone,
-      },
-    });
+    if (session?.user) {
+      await prisma.client.create({
+        data: {
+          userId: session.user.id,
+          name: client.name,
+          phone: client.phone,
+        },
+      });
+    }
   };
 
   return (
