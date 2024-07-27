@@ -18,10 +18,10 @@ import { formatDate, formatValue } from "@/utils/utils";
 import { FaWhatsapp } from "react-icons/fa";
 
 interface installment {
-  clientName: String;
-  amount: Number;
+  clientName: string;
+  amount: number;
   dueDate: Date;
-  link: String;
+  link: string;
 }
 
 export default function InstallmentsList({
