@@ -49,9 +49,9 @@ export default function InstallmentsList({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {installments.map((installment) => {
+            {installments.map((installment, key) => {
               return (
-                <TableRow>
+                <TableRow key={key}>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <div>{installment.clientName}</div>
