@@ -65,7 +65,7 @@ export default function InstallmentsList({
                     </a>
                   </TableCell>
                   <TableCell>
-                    <Switch checked={installment.status} disabled />
+                    <Switch />
                   </TableCell>
                 </TableRow>
               );
