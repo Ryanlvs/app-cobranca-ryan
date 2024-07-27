@@ -7,7 +7,6 @@ import { PrismaClient, User } from "@prisma/client";
 
 import IndicatorsBoxs from "./indicatorsBoxs";
 import InstallmentsList from "./installmentsList";
-import { getURL } from "next/dist/shared/lib/utils";
 import { auth } from "@/services/auth";
 
 const prisma = new PrismaClient();

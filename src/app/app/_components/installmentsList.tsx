@@ -19,9 +19,9 @@ import { FaWhatsapp } from "react-icons/fa";
 
 interface installment {
   clientName: String;
-  amount: String;
-  link: string;
-  status: boolean;
+  amount: Number;
+  dueDate: Date;
+  link: String;
 }
 
 export default function InstallmentsList({
