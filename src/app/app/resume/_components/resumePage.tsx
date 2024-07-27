@@ -118,7 +118,7 @@ export default function ResumePage() {
   );
 }
 
-function CircleCheckIcon(props) {
+function CircleCheckIcon(props: any) {
   return (
     <svg
       {...props}
@@ -138,7 +138,7 @@ function CircleCheckIcon(props) {
   );
 }
 
-function CircleIcon(props) {
+function CircleIcon(props: any) {
   return (
     <svg
       {...props}
@@ -157,7 +157,7 @@ function CircleIcon(props) {
   );
 }
 
-function CreditCardIcon(props) {
+function CreditCardIcon(props: any) {
   return (
     <svg
       {...props}
@@ -177,7 +177,7 @@ function CreditCardIcon(props) {
   );
 }
 
-function CurrencyIcon(props) {
+function CurrencyIcon(props: any) {
   return (
     <svg
       {...props}
@@ -200,7 +200,7 @@ function CurrencyIcon(props) {
   );
 }
 
-function XIcon(props) {
+function XIcon(props: any) {
   return (
     <svg
       {...props}
