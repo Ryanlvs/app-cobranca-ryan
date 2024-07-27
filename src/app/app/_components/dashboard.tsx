@@ -15,7 +15,7 @@ const tomorrow = new Date();
 tomorrow.setDate(tomorrow.getDate() + 1);
 tomorrow.setHours(0, 0, 0, 0); // Zerar horas, minutos, segundos e milissegundos
 
-export default async function Dashboard({ user }: { user: User }) {
+export default async function Dashboard({ user }: { user: any }) {
   const session = await auth();
 
   const installments = await prisma.installment.findMany({
