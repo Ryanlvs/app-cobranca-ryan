@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getUrl } from "./lib/get-url";
-import { cookies } from "next/headers";
 
 export default async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
@@ -8,15 +7,16 @@ export default async function middleware(request: NextRequest) {
     .getAll()
     .find((cookie) => cookie.name.includes("authjs.session-token"));
 
-  if (pathname === "/auth" && token) {
+  if ((pathname === "/auth" || pathname === "/") && token) {
+    console.log("redirect to /app");
     return NextResponse.redirect(new URL(getUrl("/app")));
   }
-  if (pathname.includes("/app") && !token) {
+  if ((pathname.includes("/app") || pathname === "/") && !token) {
+    console.log("redirect to /auth");
     return NextResponse.redirect(new URL(getUrl("/auth")));
   }
 }
 
-// Optionally, don't invoke Middleware on some paths
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };
