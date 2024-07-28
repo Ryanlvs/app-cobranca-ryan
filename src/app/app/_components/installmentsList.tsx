@@ -26,8 +26,10 @@ interface installment {
 
 export default function InstallmentsList({
   installments,
+  hasPendingInstallments,
 }: {
   installments: Array<installment>;
+  hasPendingInstallments: boolean;
 }) {
   return (
     <Card>
@@ -38,40 +40,46 @@ export default function InstallmentsList({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Cliente</TableHead>
-              <TableHead>Dia pagamento</TableHead>
-              <TableHead>Valor</TableHead>
-              <TableHead>Link WhatsApp</TableHead>
-              <TableHead>Status</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {installments.map((installment, key) => {
-              return (
-                <TableRow key={key}>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <div>{installment.clientName}</div>
-                    </div>
-                  </TableCell>
-                  <TableCell>{formatDate(installment.dueDate)}</TableCell>
-                  <TableCell>{formatValue(installment.amount)}</TableCell>
-                  <TableCell>
-                    <a href={installment.link}>
-                      <FaWhatsapp size={30} />
-                    </a>
-                  </TableCell>
-                  <TableCell>
-                    <Switch />
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+        {hasPendingInstallments ? (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Cliente</TableHead>
+                <TableHead>Dia pagamento</TableHead>
+                <TableHead>Valor</TableHead>
+                <TableHead>Link WhatsApp</TableHead>
+                <TableHead>Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {installments.map((installment, key) => {
+                return (
+                  <TableRow key={key}>
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <div>{installment.clientName}</div>
+                      </div>
+                    </TableCell>
+                    <TableCell>{formatDate(installment.dueDate)}</TableCell>
+                    <TableCell>{formatValue(installment.amount)}</TableCell>
+                    <TableCell>
+                      <a href={installment.link}>
+                        <FaWhatsapp size={30} />
+                      </a>
+                    </TableCell>
+                    <TableCell>
+                      <Switch />
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        ) : (
+          <div className="flex items-center justify-center p-8 text-muted-foreground">
+            Não há cobranças pendentes.
+          </div>
+        )}
       </CardContent>
     </Card>
   );

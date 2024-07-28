@@ -38,6 +38,14 @@ export default function NavBar() {
             <DollarSignIcon className="h-4 w-4" />
             Cobrancas
           </Link>
+          {/* <Link
+            href="/app/resume"
+            className="relative flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[active]:bg-accent data-[active]:text-accent-foreground"
+            prefetch={true}
+          >
+            <PieChartIcon className="h-4 w-4" />
+            Resumo
+          </Link> */}
         </nav>
       </div>
     </header>
@@ -60,6 +68,26 @@ function DollarSignIcon(props: any) {
     >
       <line x1="12" x2="12" y1="2" y2="22" />
       <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+    </svg>
+  );
+}
+
+function PieChartIcon(props: any) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none" // Preenche o interior com branco
+      stroke="black" // Define o contorno como preto
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M2 12a10 10 0 1 0 10-10v10z" />
+      <line x1="12" y1="2" x2="12" y2="12" />
     </svg>
   );
 }
@@ -121,26 +149,6 @@ function UsersIcon(props: any) {
       <circle cx="9" cy="7" r="4" />
       <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
       <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-    </svg>
-  );
-}
-
-function XIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M18 6 6 18" />
-      <path d="m6 6 12 12" />
     </svg>
   );
 }

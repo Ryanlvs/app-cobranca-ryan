@@ -74,30 +74,36 @@ export default function Costumers({ user, createClient, clients }: any) {
         />
       </div>
       <div className="overflow-x-auto">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Nome</TableHead>
-              <TableHead>Telefone</TableHead>
-              <TableHead>Total de Parcelas</TableHead>
-              <TableHead>Parcelas Pagas</TableHead>
-              <TableHead>Parcelas Pendentes</TableHead>
-              <TableHead>Valor Pendente</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredCustomers.map((customer: any) => (
-              <TableRow key={customer.id}>
-                <TableCell>{customer.name}</TableCell>
-                <TableCell>{customer.phone}</TableCell>
-                <TableCell>{customer.totalInstallments}</TableCell>
-                <TableCell>{customer.paidInstallments}</TableCell>
-                <TableCell>{customer.pendingInstallments}</TableCell>
-                <TableCell>R$ {customer.pendingAmount.toFixed(2)}</TableCell>
+        {filteredCustomers.length === 0 ? (
+          <div className="flex items-center justify-center p-8 text-muted-foreground">
+            Não foi encontrado clientes
+          </div>
+        ) : (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Nome</TableHead>
+                <TableHead>Telefone</TableHead>
+                <TableHead>Total de Parcelas</TableHead>
+                <TableHead>Parcelas Pagas</TableHead>
+                <TableHead>Parcelas Pendentes</TableHead>
+                <TableHead>Valor Pendente</TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {filteredCustomers.map((customer: any) => (
+                <TableRow key={customer.id}>
+                  <TableCell>{customer.name}</TableCell>
+                  <TableCell>{customer.phone}</TableCell>
+                  <TableCell>{customer.totalInstallments}</TableCell>
+                  <TableCell>{customer.paidInstallments}</TableCell>
+                  <TableCell>{customer.pendingInstallments}</TableCell>
+                  <TableCell>R$ {customer.pendingAmount.toFixed(2)}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
       </div>
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogTrigger asChild />

@@ -124,42 +124,48 @@ export default function InstallmentsPage({
           </Button>
         </div>
       </div>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Cliente</TableHead>
-            <TableHead>Valor</TableHead>
-            <TableHead>WhatsApp</TableHead>
-            <TableHead>Status</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {filteredInstallments.map((installment: any) => (
-            <TableRow key={installment.id}>
-              <TableCell>{installment.client}</TableCell>
-              <TableCell>R$ {installment.value.toFixed(2)}</TableCell>
-              <TableCell>
-                <Link href="#" target="_blank" prefetch={false}>
-                  Enviar mensagem
-                </Link>
-              </TableCell>
-              <TableCell>
-                <Badge
-                  variant={
-                    installment.status === "Pendente"
-                      ? "default"
-                      : installment.status === "Pago"
-                      ? "secondary"
-                      : "destructive"
-                  }
-                >
-                  {installment.status}
-                </Badge>
-              </TableCell>
+      {filteredInstallments.length === 0 ? (
+        <div className="flex items-center justify-center p-8 text-muted-foreground">
+          Não foi encontrado cobranças
+        </div>
+      ) : (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Cliente</TableHead>
+              <TableHead>Valor</TableHead>
+              <TableHead>WhatsApp</TableHead>
+              <TableHead>Status</TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+          <TableBody>
+            {filteredInstallments.map((installment: any) => (
+              <TableRow key={installment.id}>
+                <TableCell>{installment.client}</TableCell>
+                <TableCell>R$ {installment.value.toFixed(2)}</TableCell>
+                <TableCell>
+                  <Link href="#" target="_blank" prefetch={false}>
+                    Enviar mensagem
+                  </Link>
+                </TableCell>
+                <TableCell>
+                  <Badge
+                    variant={
+                      installment.status === "Pendente"
+                        ? "default"
+                        : installment.status === "Pago"
+                        ? "secondary"
+                        : "destructive"
+                    }
+                  >
+                    {installment.status}
+                  </Badge>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
       <Dialog open={showModal} onOpenChange={setShowModal}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>

@@ -7,7 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 export default function ResumePage() {
   return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+    <div className="w-full max-w-6xl mx-auto p-6 gap-5 flex flex-col">
       <Card>
         <CardHeader>
           <CardTitle>Resumo Semanal</CardTitle>

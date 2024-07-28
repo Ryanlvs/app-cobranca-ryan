@@ -57,6 +57,8 @@ export default async function Dashboard({ user }: { user: any }) {
     };
   });
 
+  const hasPendingInstallments = hydratedInstallments.length !== 0;
+
   return (
     <div className="flex flex-col w-full max-w-6xl mx-auto px-4 md:px-6 py-8">
       <div className="mb-4 text-lg font-medium">Olá, {user.name}!</div>
@@ -71,7 +73,10 @@ export default async function Dashboard({ user }: { user: any }) {
         }, 0)}
       />
       <div className="mt-8 grid gap-4 md:gap-6">
-        <InstallmentsList installments={hydratedInstallments} />
+        <InstallmentsList
+          installments={hydratedInstallments}
+          hasPendingInstallments={hasPendingInstallments}
+        />
       </div>
     </div>
   );
