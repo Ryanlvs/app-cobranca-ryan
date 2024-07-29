@@ -208,6 +208,7 @@ export default function Costumers({
               Você tem certeza que deseja excluir o cliente{" "}
               <strong>{clientToDelete.name}</strong>?
             </p>
+            <p>Isso apagará também todas as cobranças desse cliente</p>
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={handleCloseModal}>
                 Cancelar
