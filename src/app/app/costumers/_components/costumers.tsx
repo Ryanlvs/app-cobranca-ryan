@@ -27,6 +27,8 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
+import { FaRegTrashAlt } from "react-icons/fa";
+import { maskPhoneNumber, removeMaskPhoneNumber } from "@/utils/utils";
 
 interface clientCreater {
   userId: string;
@@ -34,7 +36,12 @@ interface clientCreater {
   phone: string;
 }
 
-export default function Costumers({ user, createClient, clients }: any) {
+export default function Costumers({
+  clients,
+  user,
+  createClient,
+  deleteClient,
+}: any) {
   const router = useRouter();
 
   const [search, setSearch] = useState("");
@@ -44,19 +51,31 @@ export default function Costumers({ user, createClient, clients }: any) {
     name: "",
     phone: "",
   });
+  const [clientToDelete, setClientToDelete] = useState<any>({
+    name: "",
+    id: -1,
+  });
+
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const filteredCustomers = useMemo(() => {
     return customers.filter((customer: any) =>
-      customer.name.toLowerCase().includes(search.toLowerCase())
+      customer?.name?.toLowerCase().includes(search.toLowerCase())
     );
   }, [search, customers]);
 
   const handleAddCustomer = () => {
     setIsModalOpen(true);
   };
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
+  };
+
+  const handleConfirmDeleteCustomer = () => {
+    deleteClient(clientToDelete.id);
+    router.refresh();
   };
 
   return (
@@ -94,11 +113,24 @@ export default function Costumers({ user, createClient, clients }: any) {
               {filteredCustomers.map((customer: any) => (
                 <TableRow key={customer.id}>
                   <TableCell>{customer.name}</TableCell>
-                  <TableCell>{customer.phone}</TableCell>
+                  <TableCell>{maskPhoneNumber(customer.phone)}</TableCell>
                   <TableCell>{customer.totalInstallments}</TableCell>
                   <TableCell>{customer.paidInstallments}</TableCell>
                   <TableCell>{customer.pendingInstallments}</TableCell>
                   <TableCell>R$ {customer.pendingAmount.toFixed(2)}</TableCell>
+                  <TableCell>
+                    <button
+                      onClick={() => {
+                        setClientToDelete({
+                          id: customer.id,
+                          name: customer.name,
+                        });
+                        setIsDeleteModalOpen(true);
+                      }}
+                    >
+                      <FaRegTrashAlt size={20} />
+                    </button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -131,9 +163,14 @@ export default function Costumers({ user, createClient, clients }: any) {
                 id="phone"
                 name="phone"
                 required
+                minLength={15}
+                maxLength={15}
                 onChange={(e) => {
+                  e.target.value = maskPhoneNumber(e.target.value);
                   let newClientInstance = newClient;
-                  newClientInstance.phone = e.target.value;
+                  newClientInstance.phone = removeMaskPhoneNumber(
+                    e.target.value
+                  );
                   setNewClient(newClientInstance);
                 }}
               />
@@ -141,12 +178,11 @@ export default function Costumers({ user, createClient, clients }: any) {
             <DialogFooter>
               <Button
                 type="submit"
-                onClick={() => {
+                onClick={(e) => {
                   if (!newClient.name) return;
                   if (!newClient.phone) return;
                   setNewClient({ ...newClient, userId: user.id });
                   createClient(newClient);
-                  router.refresh();
                 }}
               >
                 Salvar
@@ -158,6 +194,26 @@ export default function Costumers({ user, createClient, clients }: any) {
               </div>
             </DialogFooter>
           </form>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+        <DialogTrigger asChild />
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Confirmar Exclusão</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p>
+              Você tem certeza que deseja excluir o cliente{" "}
+              <strong>{clientToDelete.name}</strong>?
+            </p>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={handleCloseModal}>
+                Cancelar
+              </Button>
+              <Button onClick={handleConfirmDeleteCustomer}>Excluir</Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

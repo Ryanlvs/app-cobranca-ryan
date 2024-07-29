@@ -1,41 +1,70 @@
 import Costumers from "./_components/costumers";
 import { PrismaClient } from "@prisma/client";
 import { auth } from "@/services/auth";
+import { NextResponse } from "next/server";
+import { getUrl } from "@/lib/get-url";
 
 const prisma = new PrismaClient();
 
 export default async function Page() {
   const session = await auth();
 
-  let costumersData: Array<any> = [];
+  const createClient = async (client: any) => {
+    "use server";
+
+    await prisma.client.create({
+      data: {
+        userId: client.userId || session?.user?.id,
+        name: client.name,
+        phone: client.phone,
+      },
+    });
+
+    return NextResponse.redirect(new URL(getUrl("/app/costumers")));
+  };
+
+  const deleteClient = async (id: number) => {
+    "use server";
+
+    await prisma.installment.deleteMany({
+      where: {
+        clientId: id,
+      },
+    });
+
+    await prisma.client.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    return NextResponse.redirect(new URL(getUrl("/app/costumers")));
+  };
 
   // busca por todos os clientes do usuario
   const clients = await prisma.client.findMany({
     where: {
       userId: session?.user?.id,
     },
+    include: {
+      installments: true,
+    },
   });
 
-  // para cada cliente busca as suas parcelas e as classica
-  clients.forEach(async (client, index) => {
-    let installments = await prisma.installment.findMany({
-      where: {
-        clientId: client.id,
-      },
-    });
-
-    let totalInstallments = installments.length || 0;
+  const hydratedCostumers = clients.map((client) => {
+    let totalInstallments = client.installments.length || 0;
     let paidInstallments =
-      installments.filter((installment) => installment?.paid).length || 0;
+      client.installments.filter((installment) => installment?.paid).length ||
+      0;
     let pendingInstallments = totalInstallments - paidInstallments;
-    let pendingAmount = installments.reduce((acc, installment) => {
+    let pendingAmount = client.installments.reduce((acc, installment) => {
       if (!installment.paid) {
         return acc + installment.amount;
       }
       return acc;
     }, 0);
 
-    costumersData[index] = {
+    return {
       id: client.id,
       name: client.name,
       phone: client.phone,
@@ -46,24 +75,12 @@ export default async function Page() {
     };
   });
 
-  const createClient = async (client: any) => {
-    "use server";
-    if (session?.user) {
-      await prisma.client.create({
-        data: {
-          userId: client.userId,
-          name: client.name,
-          phone: client.phone,
-        },
-      });
-    }
-  };
-
   return (
     <Costumers
-      createClient={createClient}
+      clients={hydratedCostumers}
       user={session?.user}
-      clients={costumersData || []}
+      createClient={createClient}
+      deleteClient={deleteClient}
     />
   );
 }
