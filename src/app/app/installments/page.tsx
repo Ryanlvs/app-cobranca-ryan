@@ -50,11 +50,21 @@ export default async function Page() {
     });
   };
 
+  let deleteInstallment = async (id: number) => {
+    "use server";
+    await prisma.installment.deleteMany({
+      where: {
+        id: id,
+      },
+    });
+  };
+
   return (
     <InstallmentsPage
       clients={clients}
       installments={hydratedInstallments}
       createInstallment={createInstallment}
+      deleteInstallment={deleteInstallment}
     />
   );
 }

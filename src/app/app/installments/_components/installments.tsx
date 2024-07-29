@@ -26,6 +26,7 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
+  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import {
@@ -36,6 +37,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { SelectGroup, SelectLabel } from "@radix-ui/react-select";
+import { FaRegTrashAlt } from "react-icons/fa";
 
 interface installmentCreater {
   clientId: number;
@@ -47,6 +49,7 @@ export default function InstallmentsPage({
   clients,
   installments,
   createInstallment,
+  deleteInstallment,
 }: any) {
   const router = useRouter();
 
@@ -55,10 +58,15 @@ export default function InstallmentsPage({
   const [maxValue, setMaxValue] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [newCharge, setNewCharge] = useState({
     clientId: -1,
     amount: -1,
     dueDate: new Date(),
+  });
+  const [installmentToDelete, setInstallmentToDelete] = useState({
+    id: -1,
+    name: "",
   });
 
   const filteredInstallments = installments.filter((charge: any) => {
@@ -77,6 +85,16 @@ export default function InstallmentsPage({
 
     return clientMatch && valueMatch && statusMatch;
   });
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setIsDeleteModalOpen(false);
+  };
+
+  const handleConfirmDeleteInstallment = () => {
+    deleteInstallment(installmentToDelete.id);
+    router.refresh();
+  };
 
   return (
     <div className="w-full max-w-6xl mx-auto p-6">
@@ -161,6 +179,19 @@ export default function InstallmentsPage({
                     {installment.status}
                   </Badge>
                 </TableCell>
+                <TableCell>
+                  <button
+                    onClick={() => {
+                      setInstallmentToDelete({
+                        id: installment.id,
+                        name: installment.client,
+                      });
+                      setIsDeleteModalOpen(true);
+                    }}
+                  >
+                    <FaRegTrashAlt size={20} />
+                  </button>
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -231,11 +262,7 @@ export default function InstallmentsPage({
             </div>
           </div>
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setShowModal(false)}
-            >
+            <Button type="button" variant="outline" onClick={handleCloseModal}>
               Cancelar
             </Button>
             <Button
@@ -252,6 +279,26 @@ export default function InstallmentsPage({
               Salvar
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+        <DialogTrigger asChild />
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Confirmar Exclusão</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p>
+              Você tem certeza que deseja excluir a cobrança do cliente{" "}
+              <strong>{installmentToDelete.name}</strong>?
+            </p>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={handleCloseModal}>
+                Cancelar
+              </Button>
+              <Button onClick={handleConfirmDeleteInstallment}>Excluir</Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

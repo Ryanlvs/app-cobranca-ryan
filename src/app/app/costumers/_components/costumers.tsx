@@ -71,6 +71,7 @@ export default function Costumers({
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    setIsDeleteModalOpen(false);
   };
 
   const handleConfirmDeleteCustomer = () => {

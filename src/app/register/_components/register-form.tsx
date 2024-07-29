@@ -40,9 +40,8 @@ export function RegisterForm() {
       toast({
         title: "Usuário criado com sucesso",
         description: "",
-        action: <ToastAction altText="Logar">Logar</ToastAction>,
+        // action: <ToastAction altText="Logar">Logar</ToastAction>,
       });
-      // router.replace("/auth");
     }
   });
 
