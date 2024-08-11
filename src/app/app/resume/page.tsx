@@ -1,5 +1,5 @@
 import ResumePage from "./_components/resumePage";
 
-export default function Page() {
+export default async function Page() {
   return <ResumePage />;
 }

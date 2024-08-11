@@ -14,10 +14,6 @@ export default async function Page() {
   tomorrow.setDate(tomorrow.getDate() + 1);
   tomorrow.setHours(0, 0, 0, 0);
 
-  const logoff = async () => {
-    await signOut();
-  };
-
   const installments = await prisma.installment.findMany({
     where: {
       client: {

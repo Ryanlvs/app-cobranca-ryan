@@ -3,6 +3,8 @@
  * @see https://v0.dev/t/x8sWs7dmXE0
  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
  */
+import { Button } from "@/components/ui/button";
+import { signOut } from "@/services/auth";
 import Link from "next/link";
 
 export default function NavBar() {
@@ -38,14 +40,22 @@ export default function NavBar() {
             <DollarSignIcon className="h-4 w-4" />
             Cobrancas
           </Link>
-          {/* <Link
+          <Link
             href="/app/resume"
             className="relative flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[active]:bg-accent data-[active]:text-accent-foreground"
             prefetch={true}
           >
             <PieChartIcon className="h-4 w-4" />
             Resumo
-          </Link> */}
+          </Link>
+          <form
+            action={async () => {
+              "use server";
+              await signOut();
+            }}
+          >
+            <Button type="submit">Sign Out</Button>
+          </form>
         </nav>
       </div>
     </header>
