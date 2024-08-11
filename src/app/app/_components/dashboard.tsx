@@ -73,7 +73,7 @@ export default function Dashboard({
           0
         )}
       />
-      <div className="mt-8 grid gap-4 md:gap-6">
+      <div className="mt-8 grid gap-4 md:gap-6 overflow-auto">
         <Card>
           <CardHeader>
             <CardTitle>Cobranças da vencidas</CardTitle>

@@ -19,7 +19,7 @@ export default function IndicatorsBoxs({
           <div className="text-sm font-medium text-card-foreground">
             Número de cobranças vencidas
           </div>
-          <MdOutlineReceiptLong size={ICONS_SIZE} />
+          <MdOutlineReceiptLong className="min-w-5" size={ICONS_SIZE} />
         </div>
         <div className="text-2xl font-bold">{installmentsNumber}</div>
       </div>
@@ -28,9 +28,9 @@ export default function IndicatorsBoxs({
           <div className="text-sm font-medium text-card-foreground">
             Valor total vencido
           </div>
-          <FaDollarSign size={ICONS_SIZE} />
+          <FaDollarSign className="min-w-5" size={ICONS_SIZE} />
         </div>
-        <div className="text-2xl font-bold">
+        <div className="text-xl font-bold pt-4">
           {formatValue(installmentsAmount)}
         </div>
       </div>
@@ -39,18 +39,20 @@ export default function IndicatorsBoxs({
           <div className="text-sm font-medium text-card-foreground">
             Cobranças futuras
           </div>
-          <FaCalendarAlt size={ICONS_SIZE} />
+          <FaCalendarAlt className="min-w-5" size={ICONS_SIZE} />
         </div>
-        <div className="text-2xl font-bold">{futureInstallmentsNumber}</div>
+        <div className="text-2xl font-bold pt-4">
+          {futureInstallmentsNumber}
+        </div>
       </div>
       <div className="bg-card rounded-lg p-4 flex flex-col gap-2 border-solid border-2 border-neutral-200">
         <div className="flex items-center justify-between">
           <div className="text-sm font-medium text-card-foreground">
             Valor das cobranças futuras
           </div>
-          <FaCalendarAlt size={ICONS_SIZE} />
+          <FaCalendarAlt className="min-w-5" size={ICONS_SIZE} />
         </div>
-        <div className="text-2xl font-bold">
+        <div className="text-xl font-bold">
           {formatValue(futureInstallmentsAmount)}
         </div>
       </div>

@@ -9,17 +9,16 @@ import Link from "next/link";
 
 export default function NavBar() {
   return (
-    <header className="flex h-16 w-full items-center justify-center bg-background px-4 sm:px-6 mt-10">
+    <header className="flex h-16 w-full items-center justify-center bg-background px-4 mb-10 sm:px-6 mt-10">
       <div className="flex items-center gap-2 flex-col">
         <Link href="#" className="flex items-center gap-2" prefetch={false}>
           <MountainIcon className="h-6 w-6" />
           <span className="text-lg font-semibold">Cobrador do Ryan</span>
         </Link>
-        <nav className="flex items-center gap-4">
+        <nav className="flex items-center justify-center gap-4 flex-wrap min-w-96">
           <Link
             href="/app"
             className="relative flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[active]:bg-accent data-[active]:text-accent-foreground"
-            prefetch={false}
           >
             <HomeIcon className="h-4 w-4" />
             Home
@@ -27,7 +26,6 @@ export default function NavBar() {
           <Link
             href="/app/costumers"
             className="relative flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[active]:bg-accent data-[active]:text-accent-foreground"
-            prefetch={false}
           >
             <UsersIcon className="h-4 w-4" />
             Clientes
@@ -35,7 +33,6 @@ export default function NavBar() {
           <Link
             href="/app/installments"
             className="relative flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[active]:bg-accent data-[active]:text-accent-foreground"
-            prefetch={true}
           >
             <DollarSignIcon className="h-4 w-4" />
             Cobrancas
@@ -43,7 +40,6 @@ export default function NavBar() {
           <Link
             href="/app/resume"
             className="relative flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 data-[active]:bg-accent data-[active]:text-accent-foreground"
-            prefetch={true}
           >
             <PieChartIcon className="h-4 w-4" />
             Resumo
@@ -54,7 +50,9 @@ export default function NavBar() {
               await signOut();
             }}
           >
-            <Button type="submit">Sign Out</Button>
+            <Button className="px-2" variant="outline" type="submit">
+              Sair
+            </Button>
           </form>
         </nav>
       </div>
