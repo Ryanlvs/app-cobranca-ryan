@@ -55,9 +55,9 @@ export default async function Page() {
         "https://api.whatsapp.com/send?phone=55" +
         installment.client.phone +
         "&text=" +
-        "Olá, " +
+        "Olá " +
         installment.client.name +
-        " a parcela do dia " +
+        ", a parcela do dia " +
         formatDate(installment.dueDate) +
         " no valor de " +
         formatValue(installment.amount) +
