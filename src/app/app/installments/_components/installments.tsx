@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/select";
 import { SelectGroup, SelectLabel } from "@radix-ui/react-select";
 import { FaRegTrashAlt } from "react-icons/fa";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 interface installmentCreater {
   clientId: number;
@@ -63,6 +64,8 @@ export default function InstallmentsPage({
     clientId: -1,
     amount: -1,
     dueDate: new Date(),
+    recurrence: "weekly",
+    installmentsNumber: 0,
   });
   const [installmentToDelete, setInstallmentToDelete] = useState({
     id: -1,
@@ -260,6 +263,52 @@ export default function InstallmentsPage({
                 className="col-span-2 "
               />
             </div>
+            <div className="grid items-center grid-cols-4 gap-4">
+              <Label className="text-right">Numero de parcelas</Label>
+              <Select
+                required
+                onValueChange={(value) => {
+                  let newChargeInstance = newCharge;
+                  newChargeInstance.installmentsNumber = Number(value);
+                  setNewCharge(newChargeInstance);
+                }}
+              >
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="Numero de parcelas" />
+                </SelectTrigger>
+                <SelectContent>
+                  {[...Array(12)].map((e, index) => (
+                    <SelectItem key={index + 1} value={(index + 1).toString()}>
+                      {index + 1}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <RadioGroup
+                onValueChange={(value) => {
+                  let newChargeInstance = newCharge;
+                  newChargeInstance.recurrence = value;
+                  setNewCharge(newChargeInstance);
+                }}
+                className="flex flex-row justify-center"
+                defaultValue="weekly"
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="weekly" id="weekly" />
+                  <Label htmlFor="weekly">Semanal</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="biweekly" id="biweekly" />
+                  <Label htmlFor="biweekly">Quinzenal</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="Monthly" id="Monthly" />
+                  <Label htmlFor="Monthly">Mensal</Label>
+                </div>
+              </RadioGroup>
+            </div>
           </div>
           <DialogFooter>
             <Button type="button" variant="outline" onClick={handleCloseModal}>
@@ -271,6 +320,8 @@ export default function InstallmentsPage({
                 if (!newCharge.clientId) return;
                 if (!newCharge.amount) return;
                 if (!newCharge.dueDate) return;
+                if (newCharge.installmentsNumber === 0) return;
+                if (newCharge.recurrence === "") return;
 
                 createInstallment(newCharge);
                 router.refresh();

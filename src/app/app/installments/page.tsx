@@ -39,15 +39,37 @@ export default async function Page() {
     };
   });
 
-  let createInstallment = async ({ clientId, amount, dueDate }: any) => {
+  let createInstallment = async ({
+    clientId,
+    amount,
+    dueDate,
+    recurrence,
+    installmentsNumber,
+  }: any) => {
     "use server";
-    await prisma.installment.create({
-      data: {
-        clientId: clientId,
-        amount: amount,
-        dueDate: dueDate,
-      },
-    });
+
+    let days = 0;
+
+    if (recurrence === "weekly") days = 7;
+    if (recurrence === "biweekly") days = 14;
+
+    let newDueDate = new Date(dueDate);
+
+    for (let i = 1; i <= installmentsNumber; i++) {
+      if (i !== 1 && (recurrence === "weekly" || recurrence === "biweekly"))
+        newDueDate = addDays(newDueDate, days);
+
+      if (i !== 1 && recurrence === "monthly")
+        newDueDate = addMonths(newDueDate, 1);
+
+      await prisma.installment.create({
+        data: {
+          clientId: clientId,
+          amount: amount,
+          dueDate: newDueDate,
+        },
+      });
+    }
   };
 
   let deleteInstallment = async (id: number) => {
@@ -67,4 +89,16 @@ export default async function Page() {
       deleteInstallment={deleteInstallment}
     />
   );
+}
+
+function addDays(date: Date, days: number): Date {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
+function addMonths(date: Date, months: number): Date {
+  const result = new Date(date);
+  result.setMonth(result.getMonth() + months);
+  return result;
 }
