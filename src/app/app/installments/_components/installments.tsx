@@ -294,9 +294,9 @@ export default function InstallmentsPage({
                 id="value"
                 type="number"
                 required
-                onChange={(value) => {
+                onChange={(e) => {
                   let newChargeInstance = newCharge;
-                  newChargeInstance.installmentsNumber = Number(value);
+                  newChargeInstance.installmentsNumber = Number(e.target.value);
                   setNewCharge(newChargeInstance);
                 }}
                 className="col-span-3"
