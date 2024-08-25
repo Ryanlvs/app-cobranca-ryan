@@ -290,25 +290,17 @@ export default function InstallmentsPage({
             </div>
             <div className="grid items-center grid-cols-4 gap-4">
               <Label className="text-right">Numero de parcelas</Label>
-              <Select
+              <Input
+                id="value"
+                type="number"
                 required
-                onValueChange={(value) => {
+                onChange={(value) => {
                   let newChargeInstance = newCharge;
                   newChargeInstance.installmentsNumber = Number(value);
                   setNewCharge(newChargeInstance);
                 }}
-              >
-                <SelectTrigger className="col-span-3">
-                  <SelectValue placeholder="Numero de parcelas" />
-                </SelectTrigger>
-                <SelectContent>
-                  {[...Array(12)].map((e, index) => (
-                    <SelectItem key={index + 1} value={(index + 1).toString()}>
-                      {index + 1}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                className="col-span-3"
+              />
             </div>
             <div>
               <RadioGroup
