@@ -47,13 +47,13 @@ export default function Dashboard({
   const hasPendingInstallments = hydratedInstallments.length !== 0;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [installmentConfirm, setInstallmentConfirm] = useState({
-    amount: 0,
+    amount: -1,
     client: "",
-    id: 0,
+    id: -1,
   });
 
   const handleConfirmPayment = () => {
-    confirmPayment(installmentConfirm.id);
+    confirmPayment(installmentConfirm);
     router.refresh();
   };
 
@@ -90,7 +90,7 @@ export default function Dashboard({
                     <TableHead>Dia pagamento</TableHead>
                     <TableHead>Valor</TableHead>
                     <TableHead>Link WhatsApp</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead></TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -105,7 +105,7 @@ export default function Dashboard({
                         <TableCell>{formatDate(installment.dueDate)}</TableCell>
                         <TableCell>{formatValue(installment.amount)}</TableCell>
                         <TableCell>
-                          <Button>
+                          <Button variant="outline" className="border-2">
                             <Link href={installment.link} target="_blank">
                               <FaWhatsapp size={30} target="_blank" />
                             </Link>
@@ -122,7 +122,7 @@ export default function Dashboard({
                               setIsModalOpen(true);
                             }}
                           >
-                            Pago
+                            Pagar
                           </Button>
                         </TableCell>
                       </TableRow>

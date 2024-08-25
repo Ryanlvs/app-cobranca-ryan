@@ -23,6 +23,22 @@ export default async function Page() {
     return NextResponse.redirect(new URL(getUrl("/app/costumers")));
   };
 
+  const editClient = async (client: any) => {
+    "use server";
+
+    await prisma.client.update({
+      data: {
+        name: client.name,
+        phone: client.phone,
+      },
+      where: {
+        id: client.id,
+      },
+    });
+
+    return NextResponse.redirect(new URL(getUrl("/app/costumers")));
+  };
+
   const deleteClient = async (id: number) => {
     "use server";
 
@@ -80,6 +96,7 @@ export default async function Page() {
       clients={hydratedCostumers}
       user={session?.user}
       createClient={createClient}
+      editClient={editClient}
       deleteClient={deleteClient}
     />
   );

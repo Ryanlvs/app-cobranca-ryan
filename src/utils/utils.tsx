@@ -1,4 +1,10 @@
-export { formatDate, formatValue, maskPhoneNumber, removeMaskPhoneNumber };
+export {
+  formatDate,
+  formatDateToYYYYMMDD,
+  formatValue,
+  maskPhoneNumber,
+  removeMaskPhoneNumber,
+};
 
 function formatDate(date: Date) {
   const day = date.getDate();
@@ -9,6 +15,13 @@ function formatDate(date: Date) {
   const formattedMonth = month.toString().padStart(2, "0");
 
   return `${formattedDay}/${formattedMonth}/${year}`;
+}
+
+function formatDateToYYYYMMDD(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // getMonth() retorna 0-11, por isso adicionamos 1
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 function formatValue(value: Number) {

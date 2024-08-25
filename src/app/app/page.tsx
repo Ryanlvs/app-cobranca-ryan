@@ -61,25 +61,17 @@ export default async function Page() {
     };
   });
 
-  const confirmPayment = async (id: number) => {
+  const confirmPayment = async (installment: any) => {
     "use server";
-    let updateInstallment = await prisma.installment.findUnique({
+    await prisma.installment.update({
       where: {
-        id: id,
+        id: installment.id,
+      },
+      data: {
+        paid: true,
+        payDate: new Date(),
       },
     });
-
-    if (updateInstallment) {
-      updateInstallment.paid = true;
-      updateInstallment.payDate = new Date();
-
-      await prisma.installment.update({
-        where: {
-          id: id,
-        },
-        data: updateInstallment,
-      });
-    }
 
     return NextResponse.redirect(new URL(getUrl("/app")));
   };

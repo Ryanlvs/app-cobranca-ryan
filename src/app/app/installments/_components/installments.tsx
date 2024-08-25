@@ -37,19 +37,16 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { SelectGroup, SelectLabel } from "@radix-ui/react-select";
-import { FaRegTrashAlt } from "react-icons/fa";
+import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-
-interface installmentCreater {
-  clientId: number;
-  amount: number;
-  dueDate: Date;
-}
+import { formatDate, formatDateToYYYYMMDD } from "@/utils/utils";
+import { Switch } from "@/components/ui/switch";
 
 export default function InstallmentsPage({
   clients,
   installments,
   createInstallment,
+  editInstallment,
   deleteInstallment,
 }: any) {
   const router = useRouter();
@@ -59,6 +56,7 @@ export default function InstallmentsPage({
   const [maxValue, setMaxValue] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [newCharge, setNewCharge] = useState({
     clientId: -1,
@@ -66,6 +64,12 @@ export default function InstallmentsPage({
     dueDate: new Date(),
     recurrence: "weekly",
     installmentsNumber: 0,
+  });
+  const [installmentToEdit, setInstallmentToEdit] = useState({
+    id: -1,
+    amount: -1,
+    paid: false,
+    dueDate: new Date(),
   });
   const [installmentToDelete, setInstallmentToDelete] = useState({
     id: -1,
@@ -92,11 +96,13 @@ export default function InstallmentsPage({
   const handleCloseModal = () => {
     setShowModal(false);
     setIsDeleteModalOpen(false);
+    setIsEditModalOpen(false);
   };
 
   const handleConfirmDeleteInstallment = () => {
     deleteInstallment(installmentToDelete.id);
     router.refresh();
+    handleCloseModal();
   };
 
   return (
@@ -154,7 +160,9 @@ export default function InstallmentsPage({
           <TableHeader>
             <TableRow>
               <TableHead>Cliente</TableHead>
+              <TableHead>Data acerto</TableHead>
               <TableHead>Valor</TableHead>
+              <TableHead>Parcela</TableHead>
               <TableHead>WhatsApp</TableHead>
               <TableHead>Status</TableHead>
             </TableRow>
@@ -163,7 +171,9 @@ export default function InstallmentsPage({
             {filteredInstallments.map((installment: any) => (
               <TableRow key={installment.id}>
                 <TableCell>{installment.client}</TableCell>
+                <TableCell>{formatDate(installment.dueDate)}</TableCell>
                 <TableCell>R$ {installment.value.toFixed(2)}</TableCell>
+                <TableCell>{installment.number}</TableCell>
                 <TableCell>
                   <Link href="#" target="_blank" prefetch={false}>
                     Enviar mensagem
@@ -181,6 +191,21 @@ export default function InstallmentsPage({
                   >
                     {installment.status}
                   </Badge>
+                </TableCell>
+                <TableCell>
+                  <button
+                    onClick={() => {
+                      setInstallmentToEdit({
+                        id: installment.id,
+                        amount: installment.value,
+                        paid: installment.status === "Pago",
+                        dueDate: installment.dueDate,
+                      });
+                      setIsEditModalOpen(true);
+                    }}
+                  >
+                    <FaRegEdit size={20} />
+                  </button>
                 </TableCell>
                 <TableCell>
                   <button
@@ -233,7 +258,7 @@ export default function InstallmentsPage({
             </div>
             <div className="grid items-center grid-cols-4 gap-4">
               <Label htmlFor="value" className="text-right">
-                Valor
+                Valor Total
               </Label>
               <Input
                 id="value"
@@ -249,7 +274,7 @@ export default function InstallmentsPage({
             </div>
             <div className="grid items-center grid-cols-4 gap-4">
               <Label htmlFor="paymentDate" className="text-right">
-                Dia do acerto
+                Primeira parcela
               </Label>
               <Input
                 id="paymentDate"
@@ -304,8 +329,8 @@ export default function InstallmentsPage({
                   <Label htmlFor="biweekly">Quinzenal</Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="Monthly" id="Monthly" />
-                  <Label htmlFor="Monthly">Mensal</Label>
+                  <RadioGroupItem value="monthly" id="monthly" />
+                  <Label htmlFor="monthly">Mensal</Label>
                 </div>
               </RadioGroup>
             </div>
@@ -325,6 +350,7 @@ export default function InstallmentsPage({
 
                 createInstallment(newCharge);
                 router.refresh();
+                handleCloseModal();
               }}
             >
               Salvar
@@ -332,6 +358,93 @@ export default function InstallmentsPage({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Editar cobrança</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid items-center grid-cols-4 gap-4">
+              <Label htmlFor="value" className="text-right">
+                Valor da parcela
+              </Label>
+              <Input
+                id="value"
+                type="number"
+                defaultValue={installmentToEdit.amount}
+                required
+                onChange={(e) => {
+                  let newChargeInstance = installmentToEdit;
+                  newChargeInstance.amount = Number(e.target.value);
+                  setInstallmentToEdit(newChargeInstance);
+                }}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid items-center grid-cols-4 gap-4">
+              <Label htmlFor="paymentDate" className="text-right">
+                Data da parcela
+              </Label>
+              <Input
+                id="paymentDate"
+                type="date"
+                defaultValue={formatDateToYYYYMMDD(installmentToEdit.dueDate)}
+                required
+                onChange={(e) => {
+                  let newChargeInstance = installmentToEdit;
+                  newChargeInstance.dueDate = new Date(e.target.value);
+                  setInstallmentToEdit(newChargeInstance);
+                }}
+                className="col-span-2 "
+              />
+            </div>
+            <div className="grid items-center grid-cols-4 gap-4">
+              <Label htmlFor="paymentDate" className="text-right">
+                Status
+              </Label>
+              <RadioGroup
+                onValueChange={(value) => {
+                  let newChargeInstance = installmentToEdit;
+                  newChargeInstance.paid = value === "paid";
+                  setInstallmentToEdit(newChargeInstance);
+                }}
+                className="flex flex-row "
+                defaultValue={installmentToEdit.paid ? "paid" : "pending"}
+              >
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="paid" id="paid" />
+                  <Label htmlFor="paid">Paga</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="pending" id="pending" />
+                  <Label htmlFor="pending">Pendente</Label>
+                </div>
+              </RadioGroup>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={handleCloseModal}>
+              Cancelar
+            </Button>
+            <Button
+              type="button"
+              onClick={() => {
+                if (installmentToEdit.paid === null) return;
+                if (!installmentToEdit.amount) return;
+                if (!installmentToEdit.dueDate) return;
+
+                editInstallment(installmentToEdit);
+                router.refresh();
+                handleCloseModal();
+              }}
+            >
+              Salvar
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
         <DialogTrigger asChild />
         <DialogContent className="sm:max-w-[425px]">

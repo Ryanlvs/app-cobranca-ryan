@@ -27,7 +27,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
-import { FaRegTrashAlt } from "react-icons/fa";
+import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 import { maskPhoneNumber, removeMaskPhoneNumber } from "@/utils/utils";
 
 interface clientCreater {
@@ -40,6 +40,7 @@ export default function Costumers({
   clients,
   user,
   createClient,
+  editClient,
   deleteClient,
 }: any) {
   const router = useRouter();
@@ -51,12 +52,14 @@ export default function Costumers({
     name: "",
     phone: "",
   });
-  const [clientToDelete, setClientToDelete] = useState<any>({
+  const [clientToDeleteOrEdit, setClientToDeleteOrEdit] = useState<any>({
     name: "",
+    phone: "",
     id: -1,
   });
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const filteredCustomers = useMemo(() => {
@@ -75,7 +78,8 @@ export default function Costumers({
   };
 
   const handleConfirmDeleteCustomer = () => {
-    deleteClient(clientToDelete.id);
+    deleteClient(clientToDeleteOrEdit.id);
+    handleCloseModal();
     router.refresh();
   };
 
@@ -122,8 +126,23 @@ export default function Costumers({
                   <TableCell>
                     <button
                       onClick={() => {
-                        setClientToDelete({
+                        setClientToDeleteOrEdit({
                           id: customer.id,
+                          phone: customer.phone,
+                          name: customer.name,
+                        });
+                        setIsEditModalOpen(true);
+                      }}
+                    >
+                      <FaRegEdit size={20} />
+                    </button>
+                  </TableCell>
+                  <TableCell>
+                    <button
+                      onClick={() => {
+                        setClientToDeleteOrEdit({
+                          id: customer.id,
+                          phone: customer.phone,
                           name: customer.name,
                         });
                         setIsDeleteModalOpen(true);
@@ -138,6 +157,7 @@ export default function Costumers({
           </Table>
         )}
       </div>
+
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogTrigger asChild />
         <DialogContent className="sm:max-w-[425px]">
@@ -184,6 +204,7 @@ export default function Costumers({
                   if (!newClient.phone) return;
                   setNewClient({ ...newClient, userId: user.id });
                   createClient(newClient);
+                  handleCloseModal();
                 }}
               >
                 Salvar
@@ -197,6 +218,71 @@ export default function Costumers({
           </form>
         </DialogContent>
       </Dialog>
+
+      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+        <DialogTrigger asChild />
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Editar Cliente</DialogTitle>
+          </DialogHeader>
+          <form className="space-y-4">
+            <div className="grid gap-2">
+              <Label htmlFor="name">Nome</Label>
+              <Input
+                id="name"
+                name="name"
+                defaultValue={clientToDeleteOrEdit.name}
+                required
+                onChange={(e) => {
+                  let newClientInstance = clientToDeleteOrEdit;
+                  newClientInstance.name = e.target.value;
+                  setClientToDeleteOrEdit(newClientInstance);
+                }}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="phone">Telefone</Label>
+              <Input
+                id="phone"
+                name="phone"
+                required
+                defaultValue={maskPhoneNumber(clientToDeleteOrEdit.phone)}
+                minLength={15}
+                maxLength={15}
+                onChange={(e) => {
+                  e.target.value = maskPhoneNumber(e.target.value);
+                  let newClientInstance = clientToDeleteOrEdit;
+                  newClientInstance.phone = removeMaskPhoneNumber(
+                    e.target.value
+                  );
+                  setClientToDeleteOrEdit(clientToDeleteOrEdit);
+                }}
+              />
+            </div>
+            <DialogFooter>
+              <Button
+                type="submit"
+                onClick={(e) => {
+                  if (!clientToDeleteOrEdit.name) return;
+                  if (!clientToDeleteOrEdit.phone) return;
+
+                  console.log(clientToDeleteOrEdit);
+                  editClient(clientToDeleteOrEdit);
+                  handleCloseModal();
+                }}
+              >
+                Salvar
+              </Button>
+              <div>
+                <Button variant="outline" onClick={handleCloseModal}>
+                  Cancelar
+                </Button>
+              </div>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
         <DialogTrigger asChild />
         <DialogContent className="sm:max-w-[425px]">
@@ -206,7 +292,7 @@ export default function Costumers({
           <div className="space-y-4">
             <p>
               Você tem certeza que deseja excluir o cliente{" "}
-              <strong>{clientToDelete.name}</strong>?
+              <strong>{clientToDeleteOrEdit.name}</strong>?
             </p>
             <p>Isso apagará também todas as cobranças desse cliente</p>
             <div className="flex justify-end gap-2">

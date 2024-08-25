@@ -29,7 +29,9 @@ export default async function Page() {
     return {
       id: installment.id,
       client: installment.client.name,
+      dueDate: installment.dueDate,
       value: installment.amount,
+      number: installment.number,
       whatsappLink: "https://wa.me/55" + installment.client.phone,
       status: installment.paid
         ? "Pago"
@@ -65,11 +67,31 @@ export default async function Page() {
       await prisma.installment.create({
         data: {
           clientId: clientId,
-          amount: amount,
+          amount: amount / installmentsNumber,
+          number: i + "/" + installmentsNumber,
           dueDate: newDueDate,
         },
       });
     }
+  };
+
+  let editInstallment = async (installment: any) => {
+    "use server";
+
+    let data: any = {
+      amount: installment.amount,
+      paid: installment.paid,
+      dueDate: installment.dueDate,
+    };
+
+    if (!installment.paid) data.payDate = null;
+
+    await prisma.installment.update({
+      data: data,
+      where: {
+        id: installment.id,
+      },
+    });
   };
 
   let deleteInstallment = async (id: number) => {
@@ -86,6 +108,7 @@ export default async function Page() {
       clients={clients}
       installments={hydratedInstallments}
       createInstallment={createInstallment}
+      editInstallment={editInstallment}
       deleteInstallment={deleteInstallment}
     />
   );
