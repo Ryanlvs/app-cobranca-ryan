@@ -13,7 +13,7 @@ export default function NavBar() {
       <div className="flex items-center gap-2 flex-col">
         <Link href="#" className="flex items-center gap-2" prefetch={false}>
           <MountainIcon className="h-6 w-6" />
-          <span className="text-lg font-semibold">Cobrador do Ryan</span>
+          <span className="text-lg font-semibold">Cobrador do Bruno</span>
         </Link>
         <nav className="flex items-center justify-center gap-4 flex-wrap min-w-96">
           <Link

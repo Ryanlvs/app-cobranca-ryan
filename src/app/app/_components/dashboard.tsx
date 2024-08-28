@@ -76,7 +76,7 @@ export default function Dashboard({
       <div className="mt-8 grid gap-4 md:gap-6 overflow-auto">
         <Card>
           <CardHeader>
-            <CardTitle>Cobranças da vencidas</CardTitle>
+            <CardTitle>Cobranças Pendentes</CardTitle>
             <CardDescription>
               Uma lista com todas as cobranças que tem o vencimento nessa semana
             </CardDescription>
