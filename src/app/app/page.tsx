@@ -42,26 +42,28 @@ export default async function Page() {
     },
   });
 
-  const hydratedInstallments = installments.map((installment) => {
-    return {
-      id: installment.id,
-      clientName: installment.client.name,
-      amount: installment.amount,
-      dueDate: add3Hours(installment.dueDate),
-      description: installment.description,
-      link:
-        "https://api.whatsapp.com/send?phone=55" +
-        installment.client.phone +
-        "&text=" +
-        "Olá " +
-        installment.client.name +
-        ", a parcela do dia " +
-        formatDate(installment.dueDate) +
-        " no valor de " +
-        formatValue(installment.amount) +
-        " venceu!",
-    };
-  });
+  const hydratedInstallments = installments
+    .map((installment) => {
+      return {
+        id: installment.id,
+        clientName: installment.client.name,
+        amount: installment.amount,
+        dueDate: add3Hours(installment.dueDate),
+        description: installment.description,
+        link:
+          "https://api.whatsapp.com/send?phone=55" +
+          installment.client.phone +
+          "&text=" +
+          "Olá " +
+          installment.client.name +
+          ", a parcela do dia " +
+          formatDate(installment.dueDate) +
+          " no valor de " +
+          formatValue(installment.amount) +
+          " venceu!",
+      };
+    })
+    .sort((a: any, b: any) => a.dueDate - b.dueDate);
 
   const confirmPayment = async (installment: any) => {
     "use server";
