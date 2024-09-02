@@ -4,6 +4,8 @@ export {
   formatValue,
   maskPhoneNumber,
   removeMaskPhoneNumber,
+  add3Hours,
+  truncateText,
 };
 
 function formatDate(date: Date) {
@@ -40,4 +42,16 @@ function maskPhoneNumber(value: string) {
 
 function removeMaskPhoneNumber(value: string) {
   return value.replace(/\D/g, "");
+}
+
+function add3Hours(date: Date) {
+  return new Date(date.setHours(date.getHours() + 3));
+}
+
+function truncateText(text: string, maxLength: number) {
+  if (!text) return text;
+  if (text.length <= maxLength) {
+    return text;
+  }
+  return text.substring(0, maxLength) + "...";
 }

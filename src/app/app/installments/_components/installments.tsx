@@ -39,8 +39,8 @@ import {
 import { SelectGroup, SelectLabel } from "@radix-ui/react-select";
 import { FaRegEdit, FaRegTrashAlt } from "react-icons/fa";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { formatDate, formatDateToYYYYMMDD } from "@/utils/utils";
-import { Switch } from "@/components/ui/switch";
+import { formatDate, formatDateToYYYYMMDD, truncateText } from "@/utils/utils";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function InstallmentsPage({
   clients,
@@ -63,6 +63,7 @@ export default function InstallmentsPage({
     amount: -1,
     dueDate: new Date(),
     recurrence: "weekly",
+    description: "",
     installmentsNumber: 0,
   });
   const [installmentToEdit, setInstallmentToEdit] = useState({
@@ -70,6 +71,7 @@ export default function InstallmentsPage({
     amount: -1,
     paid: false,
     dueDate: new Date(),
+    description: "",
   });
   const [installmentToDelete, setInstallmentToDelete] = useState({
     id: -1,
@@ -163,6 +165,7 @@ export default function InstallmentsPage({
               <TableHead>Data acerto</TableHead>
               <TableHead>Valor</TableHead>
               <TableHead>Parcela</TableHead>
+              <TableHead>Descrição</TableHead>
               <TableHead>WhatsApp</TableHead>
               <TableHead>Status</TableHead>
             </TableRow>
@@ -174,8 +177,15 @@ export default function InstallmentsPage({
                 <TableCell>{formatDate(installment.dueDate)}</TableCell>
                 <TableCell>R$ {installment.value.toFixed(2)}</TableCell>
                 <TableCell>{installment.number}</TableCell>
+                <TableCell title={installment.description}>
+                  {truncateText(installment.description, 120)}
+                </TableCell>
                 <TableCell>
-                  <Link href="#" target="_blank" prefetch={false}>
+                  <Link
+                    href={installment.link}
+                    target="_blank"
+                    prefetch={false}
+                  >
                     Enviar mensagem
                   </Link>
                 </TableCell>
@@ -200,6 +210,7 @@ export default function InstallmentsPage({
                         amount: installment.value,
                         paid: installment.status === "Pago",
                         dueDate: installment.dueDate,
+                        description: installment.description,
                       });
                       setIsEditModalOpen(true);
                     }}
@@ -302,6 +313,19 @@ export default function InstallmentsPage({
                 className="col-span-3"
               />
             </div>
+            <div className="grid items-center grid-cols-4 gap-4">
+              <Label className="text-right">Descrição</Label>
+              <Textarea
+                id="value"
+                required
+                onChange={(e) => {
+                  let newChargeInstance = newCharge;
+                  newChargeInstance.description = e.target.value;
+                  setNewCharge(newChargeInstance);
+                }}
+                className="col-span-3"
+              />
+            </div>
             <div>
               <RadioGroup
                 onValueChange={(value) => {
@@ -389,6 +413,20 @@ export default function InstallmentsPage({
                   setInstallmentToEdit(newChargeInstance);
                 }}
                 className="col-span-2 "
+              />
+            </div>
+            <div className="grid items-center grid-cols-4 gap-4">
+              <Label className="text-right">Descrição</Label>
+              <Textarea
+                id="value"
+                required
+                defaultValue={installmentToEdit.description}
+                onChange={(e) => {
+                  let newChargeInstance = installmentToEdit;
+                  newChargeInstance.description = e.target.value;
+                  setInstallmentToEdit(newChargeInstance);
+                }}
+                className="col-span-3"
               />
             </div>
             <div className="grid items-center grid-cols-4 gap-4">

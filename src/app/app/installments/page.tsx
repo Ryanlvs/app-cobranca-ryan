@@ -1,6 +1,7 @@
 import InstallmentsPage from "./_components/installments";
 import { PrismaClient } from "@prisma/client";
 import { auth } from "@/services/auth";
+import { add3Hours, formatDate, formatValue } from "@/utils/utils";
 
 const today = new Date();
 const prisma = new PrismaClient();
@@ -29,10 +30,21 @@ export default async function Page() {
     return {
       id: installment.id,
       client: installment.client.name,
-      dueDate: installment.dueDate,
+      dueDate: add3Hours(installment.dueDate),
       value: installment.amount,
       number: installment.number,
-      whatsappLink: "https://wa.me/55" + installment.client.phone,
+      description: installment.description,
+      link:
+        "https://api.whatsapp.com/send?phone=55" +
+        installment.client.phone +
+        "&text=" +
+        "Olá " +
+        installment.client.name +
+        ", a parcela do dia " +
+        formatDate(installment.dueDate) +
+        " no valor de " +
+        formatValue(installment.amount) +
+        " venceu!",
       status: installment.paid
         ? "Pago"
         : today > installment.dueDate
@@ -46,6 +58,7 @@ export default async function Page() {
     amount,
     dueDate,
     recurrence,
+    description,
     installmentsNumber,
   }: any) => {
     "use server";
@@ -69,6 +82,7 @@ export default async function Page() {
           clientId: clientId,
           amount: amount / installmentsNumber,
           number: i + "/" + installmentsNumber,
+          description: description,
           dueDate: newDueDate,
         },
       });
@@ -82,6 +96,7 @@ export default async function Page() {
       amount: installment.amount,
       paid: installment.paid,
       dueDate: installment.dueDate,
+      description: installment.description,
     };
 
     if (!installment.paid) data.payDate = null;

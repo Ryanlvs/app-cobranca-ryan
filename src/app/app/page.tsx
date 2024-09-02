@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { auth, signOut } from "@/services/auth";
 import { NextResponse } from "next/server";
 import { getUrl } from "@/lib/get-url";
-import { formatDate, formatValue } from "@/utils/utils";
+import { add3Hours, formatDate, formatValue } from "@/utils/utils";
 
 const prisma = new PrismaClient();
 
@@ -46,7 +46,7 @@ export default async function Page() {
       id: installment.id,
       clientName: installment.client.name,
       amount: installment.amount,
-      dueDate: installment.dueDate,
+      dueDate: add3Hours(installment.dueDate),
       link:
         "https://api.whatsapp.com/send?phone=55" +
         installment.client.phone +

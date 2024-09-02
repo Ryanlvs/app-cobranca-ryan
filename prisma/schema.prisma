@@ -71,14 +71,15 @@ model Client {
 }
 
 model Installment {
-  id        Int       @id @default(autoincrement())
-  clientId  Int
-  amount    Float
-  dueDate   DateTime
-  payDate   DateTime?
-  paid      Boolean   @default(false)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  number    String?
-  client    Client    @relation(fields: [clientId], references: [id])
+  id          Int       @id @default(autoincrement())
+  clientId    Int
+  amount      Float
+  dueDate     DateTime
+  payDate     DateTime?
+  description String?
+  paid        Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  number      String?
+  client      Client    @relation(fields: [clientId], references: [id])
 }
