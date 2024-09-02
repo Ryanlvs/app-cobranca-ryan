@@ -4,6 +4,7 @@ import { auth, signOut } from "@/services/auth";
 import { NextResponse } from "next/server";
 import { getUrl } from "@/lib/get-url";
 import { add3Hours, formatDate, formatValue } from "@/utils/utils";
+import { Description } from "@radix-ui/react-toast";
 
 const prisma = new PrismaClient();
 
@@ -47,6 +48,7 @@ export default async function Page() {
       clientName: installment.client.name,
       amount: installment.amount,
       dueDate: add3Hours(installment.dueDate),
+      description: installment.description,
       link:
         "https://api.whatsapp.com/send?phone=55" +
         installment.client.phone +

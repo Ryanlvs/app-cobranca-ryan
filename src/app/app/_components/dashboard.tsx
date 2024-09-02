@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/table";
 import Link from "next/link";
 import { FaWhatsapp } from "react-icons/fa";
-import { formatDate, formatValue } from "@/utils/utils";
+import { formatDate, formatValue, truncateText } from "@/utils/utils";
 import { useRouter } from "next/navigation";
 
 export default function Dashboard({
@@ -89,6 +89,7 @@ export default function Dashboard({
                     <TableHead>Cliente</TableHead>
                     <TableHead>Dia pagamento</TableHead>
                     <TableHead>Valor</TableHead>
+                    <TableHead>Descrição</TableHead>
                     <TableHead>Link WhatsApp</TableHead>
                     <TableHead></TableHead>
                   </TableRow>
@@ -104,6 +105,9 @@ export default function Dashboard({
                         </TableCell>
                         <TableCell>{formatDate(installment.dueDate)}</TableCell>
                         <TableCell>{formatValue(installment.amount)}</TableCell>
+                        <TableCell title={installment.description}>
+                          {truncateText(installment.description, 70)}
+                        </TableCell>
                         <TableCell>
                           <Button variant="outline" className="border-2">
                             <Link href={installment.link} target="_blank">
